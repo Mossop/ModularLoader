@@ -1,0 +1,29 @@
+<project name="ModularLoader" default="package" basedir=".">
+
+	<target name="build" description="Simple build">
+		<property name="source_dir" value="${basedir}/src"/>
+		<property name="target_dir" value="${basedir}/classes"/>
+		<tstamp/>
+		<echo level="verbose">Compiling from ${source_dir} to ${target_dir}</echo>
+		<mkdir dir="${target_dir}"/>
+		<depend srcdir="${source_dir}" destdir="${target_dir}" cache="${source_dir}" closure="true"/>
+		<javac srcdir="${source_dir}" includes="**/*.java" destdir="${target_dir}" source="1.4">
+			<classpath path="target_dir"/>
+		</javac>
+		<mkdir dir="${target_dir}/META-INF"/>
+		<delete quiet="true" file="${target_dir}/META-INF/build.properties"/>
+		<echo file="${target_dir}/META-INF/build.properties" append="yes">build.date=${DSTAMP}${line.separator}</echo>
+		<echo file="${target_dir}/META-INF/build.properties" append="yes">build.time=${TSTAMP}${line.separator}</echo>
+	</target>
+	
+	<target name="package" description="Package">
+		<property name="source_dir" value="${basedir}/classes"/>
+		<manifest file="${source_dir}/META-INF/MANIFEST.MF">
+			<attribute name="Main-Class" value="com.blueprintit.ModularApplication"/>
+		</manifest>
+ 		<jar jarfile="${basedir}/bin/loader.jar" manifest="${source_dir}/META-INF/MANIFEST.MF">
+			<fileset dir="${source_dir}"/>
+		</jar>
+	</target>
+
+</project>
